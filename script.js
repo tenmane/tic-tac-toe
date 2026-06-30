@@ -71,7 +71,12 @@ const myGame = (function gameController(playerOneName = "Player One", playerTwoN
   function getActivePlayer() {
     return activePlayer;
   }
-
+  function setPlayerOneName(name) {
+    players[0].name = name;
+  }
+  function setPlayerTwoName(name) {
+    players[1].name = name;
+  }
   function playGame(position) {
     let isPlayValid = myBoard.placeMarker(position, activePlayer.mark);
     let isBoardFull = myBoard.isBoardFull();
@@ -115,6 +120,44 @@ const myGame = (function gameController(playerOneName = "Player One", playerTwoN
   }
 
   return {
-    playGame, getActivePlayer
+    playGame, getActivePlayer, setPlayerOneName, setPlayerTwoName
   }
+})();
+
+const display = (function handleDisplay() {
+  let startButton = document.querySelector(".start-button");
+  let resetButton = document.querySelector(".reset-button");
+  let gameStarted = false;
+  startButton.addEventListener("click", function (e) {
+    e.preventDefault();
+    let playerOneName = document.querySelector("#player-one-name").value;
+    let playerTwoName = document.querySelector("#player-two-name").value;
+    if (playerOneName != "") {
+      myGame.setPlayerOneName(playerOneName);
+    }
+    if (playerTwoName != "") {
+      myGame.setPlayerTwoName(playerTwoName);
+    }
+    gameStarted = true;
+    const turn = document.querySelector(".declare-turn");
+    turn.textContent = `${myGame.getActivePlayer().name}'s turn ( ${myGame.getActivePlayer().mark} )`
+    turn.style.visibility = "visible";
+  })
+  function inputBoard() {
+    for (let i = 0; i < 9; i++) {
+      let cell = document.querySelector(`#cell-${i}`);
+      let position = i;
+
+      cell.addEventListener("click", function () {
+        const mark = myGame.getActivePlayer().mark;
+        myGame.playGame(position);
+        cell.textContent = mark;
+        const turn = document.querySelector(".declare-turn");
+        turn.textContent = `${myGame.getActivePlayer().name}'s turn ( ${myGame.getActivePlayer().mark} )`
+        cell.disabled = true;
+      })
+
+    }
+  }
+  inputBoard();
 })();
