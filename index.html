@@ -5,6 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="reset.css">
   <link rel="stylesheet" href="style.css">
   <script defer src="script.js"></script>
 </head>
@@ -15,46 +21,40 @@
   </header>
   <main class="main-container">
 
-    <form action="#">
+    <form action="#" class="player-form">
       <div class="player-one">
         <label for="player-one-name">Player One Name</label>
-        <input type="text" name="player-one-name" id="player-one-name" value="Player One">
+        <input type="text" name="player-one-name" id="player-one-name" placeholder="Player One">
       </div>
       <div class="player-two">
         <label for="player-two-name">Player Two Name</label>
-        <input type="text" name="player-two-name" id="player-two-name" value="Player Two">
+        <input type="text" name="player-two-name" id="player-two-name" placeholder="Player Two">
       </div>
-      <button type="submit">Start Game</button>
+      <button type="submit" class="start-button">Start Game</button>
+      <button type="button" class="reset-button">Reset</button>
     </form>
 
     <div class="scores-container">
       <div class="player-one-score">
-        <span>Placeholder for player one's name</span>
-        <span>Placeholder for player one's score</span>
+        <span>Player One (X) : 0</span>
       </div>
       <div class="player-two-score">
-        <span>Placeholder for player two's name</span>
-        <span>Placeholder for player two's score</span>
+        <span>Player Two (O) : 0</span>
       </div>
     </div>
-
-    <div class="result-declaration">
-      <span></span>
-    </div>
-
+    <span class="declare-turn"></span>
     <div class="cells-container">
-      <div class="cells"></div>
-      <div class="cells"></div>
-      <div class="cells"></div>
-      <div class="cells"></div>
-      <div class="cells"></div>
-      <div class="cells"></div>
-      <div class="cells"></div>
-      <div class="cells"></div>
-      <div class="cells"></div>
+      <button class="cells" id="cell-0"></button>
+      <button class="cells" id="cell-1"></button>
+      <button class="cells" id="cell-2"></button>
+      <button class="cells" id="cell-3"></button>
+      <button class="cells" id="cell-4"></button>
+      <button class="cells" id="cell-5"></button>
+      <button class="cells" id="cell-6"></button>
+      <button class="cells" id="cell-7"></button>
+      <button class="cells" id="cell-8"></button>
     </div>
 
-    <button class="reset-button">Reset</button>
 
   </main>
 </body>
