@@ -23,11 +23,21 @@ const myBoard = (function gameBoard() {
     board.length = 0;
     board.length = 9;
   }
+  function occupiedByMark(mark) {
+    let positions = [];
+    for (let i = 0; i < board.length; i++) {
+      if (board[i] === mark) {
+        positions.push(i);
+      }
+    }
+    return positions;
+  }
   return {
     getBoard,
     placeMarker,
     printBoard,
-    resetBoard
+    resetBoard,
+    occupiedByMark
   }
 })();
 
@@ -50,17 +60,44 @@ const myGame = (function gameController(playerOneName = "Player One", playerTwoN
   function getActivePlayer() {
     return activePlayer;
   }
+
   function playGame(position) {
     let isPlayValid = myBoard.placeMarker(position, activePlayer.mark);
     if (isPlayValid) {
       console.log(`${activePlayer.name} placed ${activePlayer.mark} at position: ${position}`);
+      let winner = checkWinCondition();
+      if (winner) {
+        console.log(`${activePlayer.name} is the winner!`);
+        myBoard.resetBoard();
+      }
       activePlayer == players[0] ? activePlayer = players[1] : activePlayer = players[0];
     }
     else {
       console.log("The position is occupied");
     }
   }
+
+  const winConditions = [
+    [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]
+  ]
+  function checkWinCondition() {
+    const occupiedSpots = myBoard.occupiedByMark(activePlayer.mark);
+    let containsAll = false;
+    for (let i = 0; i < winConditions.length; i++) {
+      containsAll = winConditions[i].every(position => occupiedSpots.includes(position));
+      if (containsAll) {
+        break;
+      }
+    }
+    return containsAll;
+  }
+
   return {
     playGame, getActivePlayer
   }
 })();
+myGame.playGame(4);
+myGame.playGame(5);
+myGame.playGame(0);
+myGame.playGame(3);
+myGame.playGame(8);
