@@ -54,16 +54,15 @@ const myBoard = (function gameBoard() {
 
 const myGame = (function gameController(playerOneName = "Player One", playerTwoName = "Player Two") {
 
-  const playerScore = 0;
-  const computerScore = 0;
-
   const players = [{
     name: playerOneName,
     mark: "X",
+    score: 0,
   },
   {
     name: playerTwoName,
     mark: "O",
+    score: 0,
   }]
 
   let activePlayer = players[0];
@@ -71,36 +70,43 @@ const myGame = (function gameController(playerOneName = "Player One", playerTwoN
   function getActivePlayer() {
     return activePlayer;
   }
+  function setActivePlayer() {
+    activePlayer = players[0];
+  }
+
   function setPlayerOneName(name) {
     players[0].name = name;
   }
   function setPlayerTwoName(name) {
     players[1].name = name;
   }
+
+  function getPlayerOneScore() {
+    return players[0].score;
+  }
+  function getPlayerTwoScore() {
+    return players[1].score;
+  }
+
   function playGame(position) {
     let isPlayValid = myBoard.placeMarker(position, activePlayer.mark);
     let isBoardFull = myBoard.isBoardFull();
     let gameOver = false;
     if (isPlayValid) {
-      console.log(`${activePlayer.name} placed ${activePlayer.mark} at position: ${position}`);
       let winner = checkWinCondition();
       if (winner) {
-        console.log(`${activePlayer.name} is the winner!`);
         myBoard.resetBoard();
         gameOver = true;
+        return "win";
       }
       else if (isBoardFull) {
-        console.log("The board is full, tie!");
         myBoard.resetBoard();
         gameOver = true;
+        return "tie";
       }
       if (!gameOver) {
         activePlayer == players[0] ? activePlayer = players[1] : activePlayer = players[0];
       }
-    }
-
-    else {
-      console.log("The position is occupied");
     }
   }
 
@@ -120,7 +126,9 @@ const myGame = (function gameController(playerOneName = "Player One", playerTwoN
   }
 
   return {
-    playGame, getActivePlayer, setPlayerOneName, setPlayerTwoName
+    playGame, getActivePlayer, setPlayerOneName,
+    setPlayerTwoName, setActivePlayer, getPlayerOneScore,
+    getPlayerTwoScore,
   }
 })();
 
@@ -128,8 +136,9 @@ const display = (function handleDisplay() {
   let startButton = document.querySelector(".start-button");
   let resetButton = document.querySelector(".reset-button");
   let gameStarted = false;
-  startButton.addEventListener("click", function (e) {
-    e.preventDefault();
+
+  startButton.addEventListener("click", startGame)
+  function startGame() {
     let playerOneName = document.querySelector("#player-one-name").value;
     let playerTwoName = document.querySelector("#player-two-name").value;
     if (playerOneName != "") {
@@ -138,26 +147,89 @@ const display = (function handleDisplay() {
     if (playerTwoName != "") {
       myGame.setPlayerTwoName(playerTwoName);
     }
+
+    let playerOneScoreboard = document.querySelector(".player-one-score > span");
+    let playerTwoScoreBoard = document.querySelector(".player-two-score > span");
+
+    playerOneScoreboard.textContent = `${playerOneName} (X): ${myGame.getPlayerOneScore()}`
+    playerTwoScoreBoard.textContent = `${playerTwoName} (O): ${myGame.getPlayerTwoScore()}`
     gameStarted = true;
+
+    declareTurn();
     const turn = document.querySelector(".declare-turn");
-    turn.textContent = `${myGame.getActivePlayer().name}'s turn ( ${myGame.getActivePlayer().mark} )`
     turn.style.visibility = "visible";
-  })
+
+    for (let i = 0; i < 9; i++) {
+      let cell = document.querySelector(`#cell-${i}`);
+      cell.disabled = false;
+    }
+  }
+
+  resetButton.addEventListener("click", resetBoard)
+  function resetBoard() {
+    myBoard.resetBoard();
+    for (let i = 0; i < 9; i++) {
+      let cell = document.querySelector(`#cell-${i}`);
+      cell.textContent = "";
+      cell.disabled = false;
+    }
+    myGame.setActivePlayer();
+    declareTurn();
+  }
+
   function inputBoard() {
     for (let i = 0; i < 9; i++) {
       let cell = document.querySelector(`#cell-${i}`);
       let position = i;
 
+      if (!gameStarted) {
+        cell.disabled = true;
+      }
+
       cell.addEventListener("click", function () {
         const mark = myGame.getActivePlayer().mark;
-        myGame.playGame(position);
+        const name = myGame.getActivePlayer().name;
+
+        const winCheck = myGame.playGame(position);
         cell.textContent = mark;
-        const turn = document.querySelector(".declare-turn");
-        turn.textContent = `${myGame.getActivePlayer().name}'s turn ( ${myGame.getActivePlayer().mark} )`
-        cell.disabled = true;
+        if (winCheck === "win") {
+          const modal = document.createElement("dialog");
+          modal.textContent = `${name} (${mark}) WINS!`;
+          modal.classList.add("modal");
+          modal.setAttribute("closedby", "any");
+          document.body.append(modal);
+          modal.showModal();
+
+          let activePlayer = myGame.getActivePlayer();
+          let currentScore = activePlayer.score;
+          currentScore++;
+          activePlayer.score = currentScore;
+          resetBoard();
+          startGame();
+        }
+
+        else if (winCheck === "tie") {
+          const modal = document.createElement("dialog");
+          modal.textContent = `TIE!`;
+          modal.classList.add("modal");
+          modal.setAttribute("closedby", "any");
+          document.body.append(modal);
+          modal.showModal();
+          resetBoard();
+          startGame();
+        }
+        else {
+          cell.disabled = true;
+        }
+        declareTurn();
       })
 
     }
+  }
+
+  function declareTurn() {
+    const turn = document.querySelector(".declare-turn");
+    turn.textContent = `${myGame.getActivePlayer().name}'s turn ( ${myGame.getActivePlayer().mark} )`
   }
   inputBoard();
 })();
