@@ -32,12 +32,23 @@ const myBoard = (function gameBoard() {
     }
     return positions;
   }
+  function isBoardFull() {
+    let boardFull = true;
+    for (let i = 0; i < board.length; i++) {
+      if (board[i] == undefined) {
+        boardFull = false;
+        break;
+      }
+    }
+    return boardFull;
+  }
   return {
     getBoard,
     placeMarker,
     printBoard,
     resetBoard,
-    occupiedByMark
+    occupiedByMark,
+    isBoardFull
   }
 })();
 
@@ -63,15 +74,26 @@ const myGame = (function gameController(playerOneName = "Player One", playerTwoN
 
   function playGame(position) {
     let isPlayValid = myBoard.placeMarker(position, activePlayer.mark);
+    let isBoardFull = myBoard.isBoardFull();
+    let gameOver = false;
     if (isPlayValid) {
       console.log(`${activePlayer.name} placed ${activePlayer.mark} at position: ${position}`);
       let winner = checkWinCondition();
       if (winner) {
         console.log(`${activePlayer.name} is the winner!`);
         myBoard.resetBoard();
+        gameOver = true;
       }
-      activePlayer == players[0] ? activePlayer = players[1] : activePlayer = players[0];
+      else if (isBoardFull) {
+        console.log("The board is full, tie!");
+        myBoard.resetBoard();
+        gameOver = true;
+      }
+      if (!gameOver) {
+        activePlayer == players[0] ? activePlayer = players[1] : activePlayer = players[0];
+      }
     }
+
     else {
       console.log("The position is occupied");
     }
