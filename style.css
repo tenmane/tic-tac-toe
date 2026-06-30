@@ -68,11 +68,11 @@ header {
   transition: 0.4s;
 }
 
-.player-form button[type="submit"] {
+.player-form>button[type="button"] {
   justify-self: end;
 }
 
-.player-form button[type="button"] {
+.player-form button[type="button"]:nth-last-child(1) {
   justify-self: start;
 }
 
