@@ -30,3 +30,37 @@ const myBoard = (function gameBoard() {
     resetBoard
   }
 })();
+
+const myGame = (function gameController(playerOneName = "Player One", playerTwoName = "Player Two") {
+
+  const playerScore = 0;
+  const computerScore = 0;
+
+  const players = [{
+    name: playerOneName,
+    mark: "X",
+  },
+  {
+    name: playerTwoName,
+    mark: "O",
+  }]
+
+  let activePlayer = players[0];
+
+  function getActivePlayer() {
+    return activePlayer;
+  }
+  function playGame(position) {
+    let isPlayValid = myBoard.placeMarker(position, activePlayer.mark);
+    if (isPlayValid) {
+      console.log(`${activePlayer.name} placed ${activePlayer.mark} at position: ${position}`);
+      activePlayer == players[0] ? activePlayer = players[1] : activePlayer = players[0];
+    }
+    else {
+      console.log("The position is occupied");
+    }
+  }
+  return {
+    playGame, getActivePlayer
+  }
+})();
