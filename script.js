@@ -96,8 +96,3 @@ const myGame = (function gameController(playerOneName = "Player One", playerTwoN
     playGame, getActivePlayer
   }
 })();
-myGame.playGame(4);
-myGame.playGame(5);
-myGame.playGame(0);
-myGame.playGame(3);
-myGame.playGame(8);
