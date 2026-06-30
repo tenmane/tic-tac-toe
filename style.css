@@ -136,3 +136,18 @@ header {
   cursor: pointer;
   opacity: 0.6;
 }
+
+/*MODAL*/
+.modal {
+  background-color: rgb(0, 0, 0);
+  color: white;
+  border: none;
+  font-size: 3rem;
+  border-radius: 10px;
+  box-shadow: rgba(16, 255, 67, 0.3) 0px 0px 0px 3px;
+}
+
+.modal::backdrop {
+  backdrop-filter: blur(5px);
+  cursor: pointer;
+}
